@@ -76,7 +76,7 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
     <div className="pt-4 w-full min-w-0">
       <div className="overflow-hidden rounded-xl bg-charcoal">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <Image src={`https://picsum.photos/seed/video-${params.id}/640/800`} alt="video thumb" width={640} height={800} className="aspect-[9/14] sm:aspect-[9/12] max-h-[60vh] sm:max-h-[480px] w-full object-cover object-center" sizes="(max-width: 640px) 100vw, 640px" priority />
+        <Image src={`https://picsum.photos/seed/video-${params.id}/640/800`} alt="video thumb" width={640} height={800} className="aspect-[9/14] sm:aspect-[9/14] max-h-[60vh] sm:max-h-[480px] w-full object-cover object-center" sizes="(max-width: 640px) 100vw, 640px" priority />
         <div className="p-3 sm:p-4">
           <p className="text-sm font-semibold text-white">@{handle}: money rain 🎵</p>
           <p className="text-xs text-white/60">1.2M views · 42K likes {isDemo ? "· demo video" : ""}</p>
