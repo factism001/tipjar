@@ -90,18 +90,21 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
         {AMOUNTS.map((a) => (
           <TipChip key={a} amount={a} selected={!customMode && selected === a} onPress={() => { setSelected(a); setCustomMode(false); }} />
         ))}
-        <TipChip amount={customMode ? (custom ? `₦${custom}` : "Custom") : "Custom"} selected={customMode} onPress={() => setCustomMode(true)} label={customMode && custom ? `₦${custom}` : "Custom ₦"} />
+        <TipChip amount={customMode && custom ? parseInt(custom,10) : "Custom"} selected={customMode} onPress={() => setCustomMode(true)} />
       </div>
 
       {customMode && (
-        <input
-          inputMode="numeric"
-          pattern="[0-9]*"
-          value={custom}
-          onChange={(e) => setCustom(e.target.value.replace(/\D/g, "").slice(0, 6))}
-          placeholder="Enter amount e.g. 750"
-          className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-3 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
-        />
+        <>
+          <input
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={custom}
+            onChange={(e) => setCustom(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            placeholder="₦750"
+            className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-3 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
+          />
+          <p className="text-xs text-anon-gray mt-1">Min ₦100 — max ₦50k</p>
+        </>
       )}
 
       <label className="mt-4 block">
@@ -141,7 +144,7 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
         {paying ? "Opening Paystack…" : `Pay ₦${(amount || 0).toLocaleString("en-NG")} now`}
       </button>
       <a href={`/@${handle}`} className="mt-3 flex min-h-[44px] w-full items-center justify-center rounded-full border border-[#E5E7EB] text-sm font-semibold text-charcoal">Cancel</a>
-      <p className="mt-3 text-center text-xs text-anon-gray">Secured by Paystack · 10 req/min/IP · anon toggle hides name</p>
+      <p className="mt-3 text-center text-xs text-anon-gray">Secured by Paystack · anon hides your name</p>
       {isDemo && <p className="mt-2 text-center text-xs text-amber-600">Demo video — tipping will be a profile tip (no video attached)</p>}
     </div>
   );

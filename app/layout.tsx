@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TipJar — Tip dis creator",
+  title: "TipJar — Tip Naija creators",
   description: "Support Naija creators with instant tips via Paystack.",
   manifest: "/manifest.json",
   icons: { icon: "/icon-192.png", apple: "/icon-192.png" },

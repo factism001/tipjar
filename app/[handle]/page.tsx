@@ -11,26 +11,40 @@ const MOCK_TIPS: TipRow[] = [
   { id: "2", amount: 2000, tipper: "@bobway", is_anonymous: false, created_at: new Date(Date.now() - 5 * 3600 * 1000).toISOString(), message: "Keep am going!" },
 ];
 
+import { notFound } from "next/navigation";
+const RESERVED = new Set(["icon-192.png","icon-512.png","manifest.json","sw.js","favicon.ico","api","tip","dashboard","_next"]);
 export default function ProfilePage({ params }: { params: { handle: string } }) {
-  const handle = decodeURIComponent(params?.handle ?? "ayo_jazz").replace(/^@/, "");
+  const rawHandle = decodeURIComponent(params?.handle ?? "ayo_jazz");
+  if (RESERVED.has(rawHandle.replace(/^@/, "")) || rawHandle.includes(".")) return notFound();
+  const handle = rawHandle.replace(/^@/, "");
   const [loading, setLoading] = useState(true);
   const [tips, setTips] = useState<TipRow[]>([]);
   const [retries, setRetries] = useState(0);
 
   useEffect(() => {
-    let t: ReturnType<typeof setTimeout>;
-    let attempts = 0;
-    function poll() {
-      t = setTimeout(() => {
-        attempts += 1;
-        setRetries(attempts);
-        if (attempts < 3) poll();
-        else { setTips(MOCK_TIPS); setLoading(false); }
-      }, 800);
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch(`/api/creator/${encodeURIComponent(handle)}`);
+        if (res.ok) {
+          const j = await res.json();
+          if (cancelled) return;
+          const apiTips = (j.recent_tips ?? []).map((x: any, i: number) => ({
+            id: String(x.id ?? i),
+            amount: x.amount ?? 0,
+            tipper: x.is_anonymous ? "anon" : (x.tipper_name ?? "tipper"),
+            is_anonymous: !!x.is_anonymous,
+            created_at: x.created_at ?? new Date().toISOString(),
+            message: x.message ?? "",
+          }));
+          setTips(apiTips.length ? apiTips : []);
+          setLoading(false); return;
+        }
+      } catch {}
+      if (!cancelled) { setTips([]); setLoading(false); }
     }
-    // initial shimmer then load
-    t = setTimeout(() => { setTips(MOCK_TIPS); setLoading(false); }, 900);
-    return () => clearTimeout(t);
+    load();
+    return () => { cancelled = true; };
   }, [handle]);
 
   return (
@@ -47,8 +61,8 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
           <img src={`https://picsum.photos/seed/av-${handle}/80/80`} alt={handle} width={80} height={80} className="h-full w-full object-cover" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-charcoal">@{handle} ♦</h1>
-          <p className="text-sm text-anon-gray">₦782,300 raised · 4.9K tippers</p>
+          <h1 className="text-xl font-bold text-charcoal">@{handle} </h1>
+          <p className="text-sm text-anon-gray">{tips.length ? `₦${tips.reduce((s,x)=>s+x.amount,0).toLocaleString("en-NG")} raised · ${tips.length} tip${tips.length!==1?"s":""}` : "No tips yet — be the first!"}</p>
         </div>
       </div>
 
