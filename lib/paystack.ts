@@ -88,7 +88,14 @@ export async function getOrCreateSubaccount(creator: {
   email?: string | null;
 }) {
   if (creator.paystack_subaccount_code) return creator.paystack_subaccount_code;
+  // Test mode shortcut: if using test secret, allow missing bank to proceed with a test subaccount placeholder
+  // In live, bank details are required; in test, we return a dummy that will be ignored by initializeTransaction
+  const isTest = (process.env.PAYSTACK_SECRET_KEY || '').startsWith('sk_test_');
   if (!creator.bank_account || !creator.bank_code) {
+    if (isTest) {
+      console.warn(`[paystack] test mode: creator @${creator.handle} has no bank, using dummy subaccount for test`);
+      return 'ACCT_test_dummy_no_bank';
+    }
     throw new Error(`Creator @${creator.handle} missing bank_account/bank_code — cannot create subaccount`);
   }
 
@@ -132,21 +139,25 @@ export type InitializeTransactionParams = {
 };
 
 export async function initializeTransaction(params: InitializeTransactionParams) {
+  const isDummy = params.subaccount === 'ACCT_test_dummy_no_bank';
+  const body: Record<string, unknown> = {
+    email: params.email,
+    amount: params.amount,
+    reference: params.reference,
+    metadata: params.metadata,
+    callback_url: params.callback_url,
+  };
+  if (!isDummy) {
+    body.subaccount = params.subaccount;
+    body.bearer = 'subaccount';
+  }
   const data = await paystackRequest<{
     authorization_url: string;
     access_code: string;
     reference: string;
   }>('/transaction/initialize', {
     method: 'POST',
-    body: {
-      email: params.email,
-      amount: params.amount,
-      reference: params.reference,
-      subaccount: params.subaccount,
-      bearer: 'subaccount', // subaccount bears Paystack fees; platform 10% is net of fees via our calc
-      metadata: params.metadata,
-      callback_url: params.callback_url,
-    },
+    body,
   });
   return data;
 }
