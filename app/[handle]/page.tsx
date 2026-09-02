@@ -11,11 +11,10 @@ const MOCK_TIPS: TipRow[] = [
   { id: "2", amount: 2000, tipper: "@bobway", is_anonymous: false, created_at: new Date(Date.now() - 5 * 3600 * 1000).toISOString(), message: "Keep am going!" },
 ];
 
-import { notFound } from "next/navigation";
 const RESERVED = new Set(["icon-192.png","icon-512.png","manifest.json","sw.js","favicon.ico","api","tip","dashboard","_next"]);
 export default function ProfilePage({ params }: { params: { handle: string } }) {
   const rawHandle = decodeURIComponent(params?.handle ?? "ayo_jazz");
-  if (RESERVED.has(rawHandle.replace(/^@/, "")) || rawHandle.includes(".")) return notFound();
+  const isReserved = RESERVED.has(rawHandle.replace(/^@/, "")) || rawHandle.includes(".");
   const handle = rawHandle.replace(/^@/, "");
   const [loading, setLoading] = useState(true);
   const [tips, setTips] = useState<TipRow[]>([]);
@@ -47,6 +46,9 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
     return () => { cancelled = true; };
   }, [handle]);
 
+  if (isReserved) {
+    return <div className="pt-8 text-center"><p className="text-sm text-red-600">Not found</p><a href="/" className="mt-4 inline-block text-brand-blue">Go home</a></div>;
+  }
   return (
     <div className="pt-4">
       <div className="relative h-[200px] w-full overflow-hidden rounded-xl bg-[#F3F4F6]">
