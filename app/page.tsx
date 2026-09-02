@@ -25,7 +25,7 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="pt-4">
+    <div className="pt-4 w-full min-w-0">
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-anon-gray">🔍</span>
         <input
@@ -36,7 +36,7 @@ export default function LandingPage() {
           className="w-full rounded-xl border border-[#E5E7EB] bg-white pl-10 pr-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
         />
       </div>
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
+      <div className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x -mx-4 px-4 sm:mx-0 sm:px-0">
         {FILTERS.map((f) => (
           <button
             key={f}
@@ -48,16 +48,16 @@ export default function LandingPage() {
         ))}
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-3 xs:grid-cols-3">
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
         {filtered.map((c) => (
           <a
             key={c.handle}
             href={`/@${c.handle}`}
-            className="group rounded-xl border border-[#E5E7EB] bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[48px]"
+            className="group rounded-xl border border-[#E5E7EB] bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[48px] flex flex-col"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={c.img} alt={c.name} width={120} height={120} className="h-[120px] w-full object-cover" loading="lazy" />
-            <div className="p-2">
+            <img src={c.img} alt={c.name} width={240} height={240} className="aspect-square w-full object-cover" loading="lazy" sizes="(max-width: 640px) 50vw, 33vw" />
+            <div className="p-2 sm:p-3 min-w-0">
               <p className="text-sm font-bold text-charcoal truncate">@{c.handle}</p>
               <p className="text-xs text-anon-gray">{c.tips} tips</p>
             </div>
@@ -66,9 +66,9 @@ export default function LandingPage() {
       </div>
 
       {loadingMore && (
-        <div className="mt-4 grid grid-cols-3 gap-3">
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-[168px] rounded-xl shimmer-bg animate-pulse" />
+            <div key={i} className="aspect-square rounded-xl shimmer-bg animate-pulse" />
           ))}
         </div>
       )}
@@ -82,7 +82,7 @@ export default function LandingPage() {
 
       <a
         href="/dashboard"
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 inline-flex min-h-[48px] min-w-[120px] items-center justify-center rounded-full bg-brand-blue px-8 text-sm font-bold text-white shadow-md hover:bg-[#0046CC] animate-pulseBrand focus-visible:ring-2 focus-visible:ring-brand-blue/30"
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 inline-flex min-h-[48px] min-w-[120px] max-w-[90vw] items-center justify-center rounded-full bg-brand-blue px-6 sm:px-8 text-sm font-bold text-white shadow-md hover:bg-[#0046CC] animate-pulseBrand focus-visible:ring-2 focus-visible:ring-brand-blue/30"
       >
         Tip Now ✨
       </a>

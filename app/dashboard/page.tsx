@@ -11,19 +11,19 @@ const DEMO_TIPS = [
 export default function DashboardPage() {
   return (
     <AuthGuard>
-      <div className="pt-4">
-        <div className="flex gap-3">
-          <div className="flex-1 rounded-xl bg-naija-green text-white p-4">
+      <div className="pt-4 w-full min-w-0">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1 rounded-xl bg-naija-green text-white p-4 min-w-0">
             <p className="text-xs opacity-80">Total raised</p>
-            <p className="text-xl font-bold">₦212,450</p>
+            <p className="text-lg sm:text-xl font-bold truncate">₦212,450</p>
           </div>
-          <div className="flex-1 rounded-xl bg-warn-amber text-white p-4">
+          <div className="flex-1 rounded-xl bg-warn-amber text-white p-4 min-w-0">
             <p className="text-xs opacity-80">Tippers today</p>
-            <p className="text-xl font-bold">1,842</p>
+            <p className="text-lg sm:text-xl font-bold">1,842</p>
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 w-full min-w-0">
           <RealtimeTable initialTips={DEMO_TIPS} />
         </div>
 
@@ -35,7 +35,7 @@ export default function DashboardPage() {
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a"); a.href = url; a.download = "tips.csv"; a.click(); URL.revokeObjectURL(url);
           }}
-          className="fixed bottom-6 right-4 z-30 inline-flex min-h-[44px] items-center rounded-full bg-charcoal px-5 text-sm font-semibold text-white shadow-md hover:bg-black"
+          className="fixed bottom-6 right-4 sm:right-6 z-30 inline-flex min-h-[44px] items-center rounded-full bg-charcoal px-5 text-sm font-semibold text-white shadow-md hover:bg-black max-w-[45vw] truncate"
         >
           Export CSV
         </button>
