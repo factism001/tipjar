@@ -40,6 +40,11 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
           setTips(apiTips.length ? apiTips : []);
           setLoading(false); return;
         }
+        // 404 from API = creator not found
+        if (res.status === 404) {
+          if (!cancelled) window.location.href = "/404";
+          return;
+        }
       } catch {}
       if (!cancelled) { setTips([]); setLoading(false); }
     }
