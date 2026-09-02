@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { -webkit-tap-highlight-color: transparent; }
+html { font-family: 'Nunito Sans', system-ui, sans-serif; color: #242424; }
+body { background: #fff; }
+
+/* shimmer gradient */
+.shimmer-bg {
+  background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+}
