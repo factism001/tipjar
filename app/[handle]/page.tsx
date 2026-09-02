@@ -72,7 +72,7 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
 
       <div className="sticky bottom-6 mt-6">
         <a
-          href={`/@${handle}/video/demo123`}
+          href={`/@${handle}/video/${handle === "ayo_jazz" ? "7234567890123456789" : "demo123"}`}
           className="flex min-h-[48px] w-full items-center justify-center rounded-full bg-brand-blue text-white font-bold shadow-md hover:bg-[#0046CC] focus-visible:ring-2 focus-visible:ring-brand-blue/30"
         >
           ₦ Tip this creator
