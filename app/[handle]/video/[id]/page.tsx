@@ -25,6 +25,7 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
 
   async function pay() {
     if (!amount || amount < 100) { setError("Minimum tip is ₦100"); return; }
+    if (amount > 50000) { setError("Maximum tip is ₦50,000"); return; }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError("Enter a valid email for Paystack receipt"); return; }
     setError(null);
     setPaying(true);
@@ -99,7 +100,8 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
             inputMode="numeric"
             pattern="[0-9]*"
             value={custom}
-            onChange={(e) => setCustom(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            onChange={(e) => { const v=e.target.value.replace(/\D/g,"").slice(0,6); if(parseInt(v||"0")>50000) setError("Maximum tip is ₦50,000"); else if(error==="Maximum tip is ₦50,000") setError(null); setCustom(v); }}
+            aria-label="Custom amount"
             placeholder="₦750"
             className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-3 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
           />
@@ -112,7 +114,7 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => { setEmail(e.target.value); if (error && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value)) setError(null); }}
           placeholder="you@example.com"
           className="mt-1 w-full rounded-xl border border-[#E5E7EB] px-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
         />
@@ -137,7 +139,7 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
 
       <button
         onClick={pay}
-        disabled={paying || !amount || amount < 100}
+        disabled={paying || !amount || amount < 100 || amount > 50000}
         className="mt-6 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full bg-brand-blue text-white font-bold text-sm hover:bg-[#0046CC] disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-brand-blue/30"
       >
         {paying ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : null}

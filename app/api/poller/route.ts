@@ -28,7 +28,7 @@ function sleep(ms: number) {
 }
 function isAuthorized(req: NextRequest): boolean {
   const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) return true; // no secret configured -> allow (dev)
+  if (!cronSecret) return false; // no secret configured -> allow (dev)
   const h = req.headers.get('x-cron-secret') || req.headers.get('authorization')?.replace('Bearer ', '') || '';
   const q = req.nextUrl.searchParams.get('secret') || '';
   if (h === cronSecret || q === cronSecret) return true;

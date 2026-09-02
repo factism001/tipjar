@@ -14,8 +14,8 @@ const MOCK_TIPS: TipRow[] = [
 const RESERVED = new Set(["icon-192.png","icon-512.png","manifest.json","sw.js","favicon.ico","api","tip","dashboard","_next"]);
 export default function ProfilePage({ params }: { params: { handle: string } }) {
   const rawHandle = decodeURIComponent(params?.handle ?? "ayo_jazz");
-  const isReserved = RESERVED.has(rawHandle.replace(/^@/, "")) || rawHandle.includes(".");
-  const handle = rawHandle.replace(/^@/, "");
+  const isReserved = RESERVED.has(rawHandle.replace(/^@/, "").toLowerCase()) || rawHandle.includes(".");
+  const handle = rawHandle.replace(/^@/, "").toLowerCase();
   const [loading, setLoading] = useState(true);
   const [tips, setTips] = useState<TipRow[]>([]);
   const [retries, setRetries] = useState(0);

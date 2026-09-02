@@ -31,6 +31,7 @@ export default function LandingPage() {
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
+          aria-label="Search creators"
           placeholder="Search creators …"
           className="w-full rounded-xl border border-[#E5E7EB] bg-white pl-10 pr-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
         />
