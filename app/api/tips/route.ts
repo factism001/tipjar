@@ -41,14 +41,11 @@ export async function POST(req: NextRequest) {
   });
 
   if (rlError) {
-    console.error('[tips] rate-limit rpc error', rlError.message);
-    // fail open? No — fail closed with 500 so Paystack abuse not hidden
-    return NextResponse.json({ error: 'Rate limit check failed' }, { status: 500 });
-  }
-  if (allowed === false) {
+    console.warn('[tips] rate-limit rpc error — fail OPEN (allow request)', rlError.message);
+    // fail OPEN: DB blip must not block real tips — log and continue
+  } else if (allowed === false) {
     return NextResponse.json({ error: 'Too many requests — try again in a minute' }, { status: 429 });
   }
-
   // 2. Parse + validate body
   let body: unknown;
   try {

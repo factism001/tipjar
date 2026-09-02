@@ -136,6 +136,20 @@ export async function POST(req: Request) {
     }
   }
 
+  // 7b. Amount cross-check: if pending tip exists, paid amount must match initiated amount
+  // Prevents tampered payload where HMAC is valid but amount altered after init
+  try {
+    const { data: pending } = await supabase.from('tips').select('amount, status').eq('paystack_ref', reference).maybeSingle();
+    if (pending && pending.status === 'pending' && pending.amount !== amountKobo) {
+      console.error(`[webhook] Amount mismatch ref=${reference} pending=${pending.amount} paid=${amountKobo}`);
+      // Log forensic event
+      await supabase.from('webhook_events').insert({ paystack_ref: reference, payload: event, hmac_valid: true, event_type: 'amount_mismatch', amount_kobo: amountKobo, ip_address: ipAddress });
+      return new Response('Amount mismatch', { status: 400 });
+    }
+  } catch (e) {
+    console.warn('[webhook] amount verify lookup failed', e);
+  }
+
   // Idempotent upsert via RPC (handles ON CONFLICT + suspicious retry logic)
   const { data: result, error } = await supabase.rpc('upsert_tip_from_webhook', {
     p_paystack_ref: reference,

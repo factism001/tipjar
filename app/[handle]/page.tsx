@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import ShimmerCard from "@/components/ShimmerCard";
 
@@ -52,15 +53,13 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
   return (
     <div className="pt-4 w-full min-w-0">
       <div className="relative h-[160px] sm:h-[200px] w-full overflow-hidden rounded-xl bg-[#F3F4F6]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`https://picsum.photos/seed/${handle}/600/300`} alt={`${handle} cover`} width={600} height={300} className="h-full w-full object-cover" sizes="(max-width: 640px) 100vw, 640px" />
+        <Image src={`https://picsum.photos/seed/${handle}/600/300`} alt={`${handle} cover`} width={600} height={300} className="h-full w-full object-cover" sizes="(max-width: 640px) 100vw, 640px" priority={false} />
         {loading && <div className="absolute inset-0 shimmer-bg opacity-60"><span className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" /></div>}
       </div>
 
       <div className="mt-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div className="h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-full border-4 border-white shadow-sm overflow-hidden bg-anon-gray/20 flex items-center justify-center -mt-6 sm:-mt-8">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`https://picsum.photos/seed/av-${handle}/160/160`} alt={handle} width={80} height={80} className="h-full w-full object-cover" />
+          <Image src={`https://picsum.photos/seed/av-${handle}/160/160`} alt={handle} width={80} height={80} className="h-full w-full object-cover" />
         </div>
         <div className="min-w-0 flex-1 sm:ml-2">
           <h1 className="text-lg sm:text-xl font-bold text-charcoal truncate">@{handle} </h1>

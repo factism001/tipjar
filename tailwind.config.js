@@ -11,7 +11,7 @@ module.exports = {
         "brand-blue": "#0057FF",
         "naija-green": "#00A850",
         "warn-amber": "#FF991F",
-        "anon-gray": "#9CA3AF",
+        "anon-gray": "#6B7280",
         charcoal: "#242424",
       },
       fontFamily: {

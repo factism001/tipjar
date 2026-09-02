@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import TipChip from "@/components/TipChip";
 
 const CREATORS = [
@@ -36,7 +37,7 @@ export default function LandingPage() {
           className="w-full rounded-xl border border-[#E5E7EB] bg-white pl-10 pr-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
         />
       </div>
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
         {FILTERS.map((f) => (
           <button
             key={f}
@@ -55,8 +56,7 @@ export default function LandingPage() {
             href={`/@${c.handle}`}
             className="group rounded-xl border border-[#E5E7EB] bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[48px] flex flex-col"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={c.img} alt={c.name} width={240} height={240} className="aspect-square w-full object-cover" loading="lazy" sizes="(max-width: 640px) 50vw, 33vw" />
+            <Image src={c.img} alt={c.name} width={240} height={240} className="aspect-square w-full object-cover" sizes="(max-width: 640px) 50vw, 33vw" />
             <div className="p-2 sm:p-3 min-w-0">
               <p className="text-sm font-bold text-charcoal truncate">@{c.handle}</p>
               <p className="text-xs text-anon-gray">{c.tips} tips</p>
