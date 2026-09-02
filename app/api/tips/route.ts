@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
         // for webhook split calc audit
         amount_kobo: amount,
       },
-      callback_url: callback_url || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://tipjar.ng'}/tip/success?ref=${reference}`,
+      callback_url: callback_url || `${process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://tipjar-gray.vercel.app'}/tip/success?ref=${reference}`,
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
