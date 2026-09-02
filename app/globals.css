@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Nunito Sans via <link> in layout.tsx (preconnect, display=swap) */
 * { -webkit-tap-highlight-color: transparent; }
-html { font-family: 'Nunito Sans', system-ui, sans-serif; color: #242424; }
+html { font-family: 'Nunito Sans', system-ui, -apple-system, sans-serif; color: #242424; }
 body { background: #fff; }
 
 /* shimmer gradient */
