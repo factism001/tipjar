@@ -1,11 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import TipChip from "@/components/TipChip";
 import AnonToggle from "@/components/AnonToggle";
 import CopyButton from "@/components/CopyButton";
 export const dynamic = "force-dynamic";
 const AMOUNTS = [500, 1000, 2000, 5000];
+
+const CUR_SYM: Record<string, string> = { USD: "$", GBP: "£", EUR: "€" };
+const EUR_COUNTRIES = new Set([
+  "DE", "FR", "IE", "NL", "ES", "IT", "PT", "BE", "AT", "FI", "GR", "SK", "SI", "EE", "LV", "LT", "MT", "CY", "HR",
+]);
 
 export default function VideoTipPage({ params }: { params: { handle: string; id: string } }) {
   const handle = decodeURIComponent(params?.handle ?? "demo").replace(/^@/, "");
@@ -20,9 +25,36 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
   const [paying, setPaying] = useState(false);
   const [paid, setPaid] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Diaspora mode: foreign-currency display, charged in NGN via Paystack
+  const [showFx, setShowFx] = useState(false);
+  const [fxCur, setFxCur] = useState("USD");
+  const [fxRates, setFxRates] = useState<Record<string, number> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [geoR, fxR] = await Promise.all([
+          fetch("/api/geo").then((r) => r.json()).catch(() => ({})),
+          fetch("/api/fx").then((r) => r.json()).catch(() => ({})),
+        ]);
+        if (cancelled) return;
+        if (fxR?.rates) setFxRates(fxR.rates);
+        const c = (geoR?.country || "").toUpperCase();
+        if (c && c !== "NG") {
+          setShowFx(true);
+          setFxCur(c === "GB" ? "GBP" : EUR_COUNTRIES.has(c) ? "EUR" : "USD");
+        }
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const amount = customMode && custom ? parseInt(custom, 10) || 0 : selected;
   const amountKobo = amount * 100;
+  const fxRate = fxRates?.[fxCur] || null;
+  const fxEquiv = fxRate && amount > 0 ? amount / fxRate : null;
+  const receiveN = amount > 0 ? Math.round(amount * 0.9) : 0;
 
   async function pay() {
     if (!amount || amount < 100) { setError("Minimum tip is ₦100"); return; }
@@ -137,6 +169,34 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
       </div>
 
       {error && <p className="mt-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
+
+      <div className="mt-4 flex items-center justify-between">
+        <p className="text-xs text-anon-gray">
+          {showFx && fxEquiv !== null
+            ? <>≈ {CUR_SYM[fxCur]}{fxEquiv.toLocaleString("en-US", { maximumFractionDigits: 2 })} · @{handle} receives ≈ ₦{receiveN.toLocaleString("en-NG")}</>
+            : <>@{handle} receives ≈ ₦{receiveN.toLocaleString("en-NG")} <span className="font-mono">(after 10% fee)</span></>}
+        </p>
+        <button
+          onClick={() => setShowFx((v) => !v)}
+          aria-label="Toggle foreign currency display"
+          className="shrink-0 ml-2 rounded-md border border-slate-line px-2 py-1 text-xs font-mono font-semibold text-anon-gray min-h-[32px]"
+        >
+          {showFx ? "₦" : "$/£"}
+        </button>
+      </div>
+      {showFx && (
+        <div className="mt-2 flex gap-2">
+          {["USD", "GBP", "EUR"].map((c) => (
+            <button
+              key={c}
+              onClick={() => setFxCur(c)}
+              className={`rounded-md border px-3 py-1 text-xs font-mono font-semibold min-h-[32px] ${fxCur === c ? "bg-brand-ink text-white border-brand-ink" : "bg-white text-anon-gray border-slate-line"}`}
+            >
+              {CUR_SYM[c]} {c}
+            </button>
+          ))}
+        </div>
+      )}
 
       <button
         onClick={pay}
