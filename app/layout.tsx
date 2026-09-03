@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         <main className="mx-auto max-w-[640px] px-4 pb-24 w-full min-w-0">{children}</main>
-        <footer className="mx-auto max-w-[640px] px-4 py-8 text-center text-xs sm:text-sm text-anon-gray">TipJar · Lagos · <span className="font-mono">Paystack secured</span> · <a href="/terms" className="underline">Terms</a> · <a href="/privacy" className="underline">Privacy</a> · <a href="/refunds" className="underline">Refunds</a></footer>
+        <footer className="mx-auto max-w-[640px] px-4 py-8 text-center text-xs sm:text-sm text-anon-gray">TipJar · Lagos · <span className="font-mono">Paystack secured</span> · <a href="/share-guide" className="underline">Share guide</a> · <a href="/terms" className="underline">Terms</a> · <a href="/privacy" className="underline">Privacy</a> · <a href="/refunds" className="underline">Refunds</a></footer>
       </body>
     </html>
   );
