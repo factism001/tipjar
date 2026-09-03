@@ -50,10 +50,32 @@ export async function GET(
     return NextResponse.json({ creator, videos: [], warning: 'Videos lookup failed' }, { status: 200 });
   }
 
+  // Recent successful tips (public-safe: anon masked, no emails) via service_role
+  let recent_tips: any[] = [];
+  try {
+    const svc = createClient('service_role');
+    const { data: tips } = await svc
+      .from('tips')
+      .select('id, amount, tipper_name, is_anonymous, message, created_at')
+      .eq('creator_id', creator.id)
+      .eq('status', 'success')
+      .order('created_at', { ascending: false })
+      .limit(10);
+    recent_tips = (tips || []).map((t: any) => ({
+      id: t.id,
+      amount: t.amount,
+      tipper_name: t.is_anonymous ? 'anon' : t.tipper_name,
+      is_anonymous: !!t.is_anonymous,
+      message: t.message || '',
+      created_at: t.created_at,
+    }));
+  } catch {}
+
   return NextResponse.json(
     {
       creator,
       videos: videos || [],
+      recent_tips,
     },
     {
       status: 200,

@@ -80,6 +80,10 @@ export default function LandingPage() {
         {loadingMore ? "Loading" : "Load 12 more"}
       </button>
 
+      <p className="mt-4 text-center text-sm text-anon-gray">
+        Creator? <a href="/onboard" className="font-semibold text-brand-blue">Claim your handle</a>
+      </p>
+
       <a
         href="/dashboard"
         className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 inline-flex min-h-[48px] min-w-[120px] max-w-[90vw] items-center justify-center rounded-md bg-brand-blue px-6 sm:px-8 text-sm font-semibold text-white shadow-md hover:bg-[#0046CC] focus-visible:ring-2 focus-visible:ring-brand-blue/30"
