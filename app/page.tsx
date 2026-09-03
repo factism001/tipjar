@@ -12,11 +12,11 @@ const CREATORS = [
   { handle: "chidi_gaming", name: "Chidi", tips: "2.9K", img: "https://picsum.photos/seed/chidi/120/120" },
 ];
 
-const FILTERS = ["🔥 Trending", "🎵 Music", "🎮 Gaming"];
+const FILTERS = ["Trending", "Music", "Gaming"];
 
 export default function LandingPage() {
   const [q, setQ] = useState("");
-  const [filter, setFilter] = useState("🔥 Trending");
+  const [filter, setFilter] = useState("Trending");
   const [loadingMore, setLoadingMore] = useState(false);
   const filtered = CREATORS.filter((c) => c.handle.includes(q.toLowerCase()) || c.name.toLowerCase().includes(q.toLowerCase()));
 
@@ -28,13 +28,13 @@ export default function LandingPage() {
   return (
     <div className="pt-4 w-full min-w-0">
       <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-anon-gray">🔍</span>
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-anon-gray" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           aria-label="Search creators"
-          placeholder="Search creators …"
-          className="w-full rounded-xl border border-[#E5E7EB] bg-white pl-10 pr-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
+          placeholder="Search creators"
+          className="w-full rounded-lg border border-slate-line bg-white pl-10 pr-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
         />
       </div>
       <div className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
@@ -42,7 +42,7 @@ export default function LandingPage() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`shrink-0 snap-start rounded-full px-4 py-2 text-sm font-semibold border min-h-[44px] ${filter === f ? "bg-brand-blue text-white border-brand-blue" : "bg-white text-charcoal border-[#E5E7EB]"}`}
+            className={`shrink-0 snap-start rounded-md px-4 py-2 text-sm font-semibold border min-h-[44px] ${filter === f ? "bg-brand-ink text-white border-brand-ink" : "bg-white text-charcoal border-slate-line"}`}
           >
             {f}
           </button>
@@ -54,12 +54,12 @@ export default function LandingPage() {
           <a
             key={c.handle}
             href={`/@${c.handle}`}
-            className="group rounded-xl border border-[#E5E7EB] bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[48px] flex flex-col"
+            className="group rounded-lg border border-slate-line bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[48px] flex flex-col"
           >
             <Image src={c.img} alt={c.name} width={240} height={240} className="aspect-square w-full object-cover" sizes="(max-width: 640px) 50vw, 33vw" />
             <div className="p-2 sm:p-3 min-w-0">
-              <p className="text-sm font-bold text-charcoal truncate">@{c.handle}</p>
-              <p className="text-xs text-anon-gray">{c.tips} tips</p>
+              <p className="text-sm font-semibold tracking-tight text-charcoal truncate">@{c.handle}</p>
+              <p className="text-xs text-anon-gray font-mono tnum">{c.tips} tips</p>
             </div>
           </a>
         ))}
@@ -75,16 +75,16 @@ export default function LandingPage() {
 
       <button
         onClick={loadMore}
-        className="mt-4 w-full rounded-xl border border-dashed border-[#E5E7EB] py-3 text-sm font-semibold text-anon-gray hover:text-charcoal min-h-[44px]"
+        className="mt-4 w-full rounded-lg border border-slate-line py-3 text-sm font-semibold text-anon-gray hover:text-charcoal min-h-[44px]"
       >
-        {loadingMore ? "Loading…" : "Load 12 more →"}
+        {loadingMore ? "Loading" : "Load 12 more"}
       </button>
 
       <a
         href="/dashboard"
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 inline-flex min-h-[48px] min-w-[120px] max-w-[90vw] items-center justify-center rounded-full bg-brand-blue px-6 sm:px-8 text-sm font-bold text-white shadow-md hover:bg-[#0046CC] animate-pulseBrand focus-visible:ring-2 focus-visible:ring-brand-blue/30"
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 inline-flex min-h-[48px] min-w-[120px] max-w-[90vw] items-center justify-center rounded-md bg-brand-blue px-6 sm:px-8 text-sm font-semibold text-white shadow-md hover:bg-[#0046CC] focus-visible:ring-2 focus-visible:ring-brand-blue/30"
       >
-        Tip Now ✨
+        Tip now
       </a>
     </div>
   );

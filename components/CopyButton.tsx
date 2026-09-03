@@ -25,15 +25,15 @@ export default function CopyButton({ text, label = "Copy", anon }: Props) {
       onClick={handleCopy}
       aria-label={copied ? "Copied" : label}
       className={[
-        "inline-flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-3 rounded-full text-xs font-semibold border",
-        copied ? "bg-naija-green text-white border-naija-green" : "bg-white text-charcoal border-[#E5E7EB] hover:bg-brand-blue hover:text-white hover:border-brand-blue",
+        "inline-flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-3 rounded-md text-xs font-semibold border",
+        copied ? "bg-naija-green text-white border-naija-green" : "bg-white text-charcoal border-slate-line hover:bg-brand-ink hover:text-white hover:border-brand-ink",
         "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/30",
       ].join(" ")}
     >
       {copied ? (
         <>
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-naija-green text-[10px]">✓</span>
-          Copied! ✨
+          Copied
         </>
       ) : (
         <>

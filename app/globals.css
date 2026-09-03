@@ -2,10 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Nunito Sans via <link> in layout.tsx (preconnect, display=swap) */
+/* Inter + JetBrains Mono via <link> in layout.tsx (preconnect, display=swap) */
 * { -webkit-tap-highlight-color: transparent; }
-html { font-family: 'Nunito Sans', system-ui, -apple-system, sans-serif; color: #242424; }
+html { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #0F1E33; -webkit-font-smoothing: antialiased; }
 body { background: #fff; }
+h1, h2, h3 { letter-spacing: -0.02em; color: #0F1E33; }
+/* Tabular numbers for Naira amounts, refs, counts */
+.tnum, .font-mono { font-variant-numeric: tabular-nums; }
 
 /* shimmer gradient */
 .shimmer-bg {

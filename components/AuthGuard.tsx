@@ -63,9 +63,9 @@ export default function AuthGuard({ children, onVerified }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/60 p-4 backdrop-blur-[2px]">
-      <div className="w-full max-w-[360px] rounded-2xl bg-white p-6 shadow-lg" role="dialog" aria-modal="true" aria-label="Verify your number">
-        <h2 className="text-xl font-bold text-charcoal">Verify your number ✨</h2>
-        <p className="mt-1 text-sm text-anon-gray">We go send code to your phone — e quick, 30 seconds.</p>
+      <div className="w-full max-w-[360px] rounded-lg bg-white p-6 shadow-lg" role="dialog" aria-modal="true" aria-label="Verify your number">
+        <h2 className="text-xl font-extrabold tracking-tight text-charcoal">Verify your number</h2>
+        <p className="mt-1 text-sm text-anon-gray">Enter the 6-digit code. Expires in 5 minutes.</p>
 
         {step === "phone" ? (
           <div className="mt-5 space-y-3">
@@ -82,12 +82,12 @@ export default function AuthGuard({ children, onVerified }: Props) {
             <button
               onClick={sendOtp}
               disabled={sending}
-              className="w-full min-h-[48px] rounded-full bg-brand-blue text-white font-bold text-sm hover:bg-[#0046CC] disabled:opacity-60 flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-brand-blue/30"
+              className="w-full min-h-[48px] rounded-md bg-brand-blue text-white font-semibold text-sm hover:bg-[#0046CC] disabled:opacity-60 flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-brand-blue/30"
             >
               {sending ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : null}
-              {sending ? "Sending…" : "Send OTP"}
+              {sending ? "Sending" : "Send code"}
             </button>
-            <p className="text-center text-xs text-anon-gray">Code expires in 300s · 10 req/min limit</p>
+            <p className="text-center text-xs text-anon-gray font-mono">Code expires in 300s</p>
           </div>
         ) : (
           <div className="mt-5 space-y-3">

@@ -9,14 +9,17 @@ module.exports = {
     extend: {
       colors: {
         "brand-blue": "#0057FF",
+        "brand-ink": "#0A1B33",
         "naija-green": "#00A850",
         "warn-amber": "#FF991F",
         "anon-gray": "#6B7280",
-        charcoal: "#242424",
+        "slate-line": "#E2E8F0",
+        charcoal: "#0F1E33",
       },
       fontFamily: {
-        body: ["Nunito Sans", "system-ui", "sans-serif"],
-        sans: ["Nunito Sans", "system-ui", "sans-serif"],
+        body: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       fontSize: {
         xs: ["0.75rem", { lineHeight: "1rem" }],

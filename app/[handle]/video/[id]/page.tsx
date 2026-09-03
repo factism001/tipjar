@@ -65,26 +65,26 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
     return (
       <div className="pt-8 text-center">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-naija-green text-white text-2xl">✓</div>
-        <h1 className="mt-4 text-xl font-bold text-charcoal">Tip sent! 🎉</h1>
-        <p className="mt-1 text-sm text-anon-gray">₦{amount.toLocaleString("en-NG")} to @{handle} {anon ? "anonymously" : ""}</p>
-        <a href={`/@${handle}`} className="mt-6 inline-flex min-h-[48px] items-center rounded-full border border-[#E5E7EB] px-6 text-sm font-semibold">Back to profile</a>
+        <h1 className="mt-4 text-xl font-extrabold tracking-tight text-charcoal">Tip sent</h1>
+        <p className="mt-1 text-sm text-anon-gray font-mono tnum">₦{amount.toLocaleString("en-NG")} to @{handle} {anon ? "· anonymous" : ""}</p>
+        <a href={`/@${handle}`} className="mt-6 inline-flex min-h-[48px] items-center rounded-md border border-slate-line px-6 text-sm font-semibold">Back to profile</a>
       </div>
     );
   }
 
   return (
     <div className="pt-4 w-full min-w-0">
-      <div className="overflow-hidden rounded-xl bg-charcoal">
+      <div className="overflow-hidden rounded-lg bg-charcoal">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <Image src={`https://picsum.photos/seed/video-${params.id}/640/800`} alt="video thumb" width={640} height={800} className="aspect-[9/14] sm:aspect-[9/14] max-h-[60vh] sm:max-h-[480px] w-full object-cover object-center" sizes="(max-width: 640px) 100vw, 640px" priority />
         <div className="p-3 sm:p-4">
-          <p className="text-sm font-semibold text-white">@{handle}: money rain 🎵</p>
-          <p className="text-xs text-white/60">1.2M views · 42K likes {isDemo ? "· demo video" : ""}</p>
+          <p className="text-sm font-semibold tracking-tight text-white">@{handle}</p>
+          <p className="text-xs text-white/60 font-mono tnum">1.2M views · 42K likes {isDemo ? "· demo video" : ""}</p>
         </div>
       </div>
 
       <div className="mt-4 flex items-center justify-between">
-        <h2 className="text-sm font-bold text-charcoal">Tip Amount</h2>
+        <h2 className="text-sm font-semibold tracking-tight text-charcoal">Tip amount</h2>
         <CopyButton text={`@${handle}`} label="Copy handle" />
       </div>
 
@@ -104,49 +104,49 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
             onChange={(e) => { const v=e.target.value.replace(/\D/g,"").slice(0,6); if(parseInt(v||"0")>50000) setError("Maximum tip is ₦50,000"); else if(error==="Maximum tip is ₦50,000") setError(null); setCustom(v); }}
             aria-label="Custom amount"
             placeholder="₦750"
-            className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-3 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
+            className="mt-2 w-full rounded-lg border border-slate-line px-4 py-3 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px] font-mono tnum"
           />
-          <p className="text-xs text-anon-gray mt-1">Min ₦100 — max ₦50k</p>
+          <p className="text-xs text-anon-gray mt-1 font-mono tnum">Min ₦100 · Max ₦50,000</p>
         </>
       )}
 
       <label className="mt-4 block">
-        <span className="text-sm font-bold text-charcoal">Your email <span className="font-normal text-anon-gray">(for Paystack receipt)</span></span>
+        <span className="text-sm font-semibold tracking-tight text-charcoal">Email <span className="font-normal text-anon-gray">for Paystack receipt</span></span>
         <input
           type="email"
           value={email}
           onChange={(e) => { setEmail(e.target.value); if (error && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value)) setError(null); }}
           placeholder="you@example.com"
-          className="mt-1 w-full rounded-xl border border-[#E5E7EB] px-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
+          className="mt-1 w-full rounded-lg border border-slate-line px-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
         />
       </label>
 
       <label className="mt-4 block">
-        <span className="text-sm font-bold text-charcoal">Message <span className="font-normal text-anon-gray">({message.length}/140)</span></span>
+        <span className="text-sm font-semibold tracking-tight text-charcoal">Message <span className="font-normal text-anon-gray font-mono">({message.length}/140)</span></span>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value.slice(0, 140))}
-          placeholder="Shoutout: thanks for the 🔥"
+          placeholder="Say thanks"
           rows={3}
-          className="mt-1 w-full rounded-xl border border-[#E5E7EB] px-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+          className="mt-1 w-full rounded-lg border border-slate-line px-4 py-3 text-sm placeholder:text-anon-gray focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
         />
       </label>
 
-      <div className="mt-4 rounded-xl border border-[#E5E7EB] p-4">
+      <div className="mt-4 rounded-lg border border-slate-line p-4">
         <AnonToggle checked={anon} onChange={setAnon} />
       </div>
 
-      {error && <p className="mt-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl p-3">{error}</p>}
+      {error && <p className="mt-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
 
       <button
         onClick={pay}
         disabled={paying || !amount || amount < 100 || amount > 50000}
-        className="mt-6 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full bg-brand-blue text-white font-bold text-sm hover:bg-[#0046CC] disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-brand-blue/30"
+        className="mt-6 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-md bg-brand-blue text-white font-semibold text-sm hover:bg-[#0046CC] disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-brand-blue/30"
       >
         {paying ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : null}
-        {paying ? "Opening Paystack…" : `Pay ₦${(amount || 0).toLocaleString("en-NG")} now`}
+        {paying ? "Opening Paystack" : `Pay ₦${(amount || 0).toLocaleString("en-NG")}`}
       </button>
-      <a href={`/@${handle}`} className="mt-3 flex min-h-[44px] w-full items-center justify-center rounded-full border border-[#E5E7EB] text-sm font-semibold text-charcoal">Cancel</a>
+      <a href={`/@${handle}`} className="mt-3 flex min-h-[44px] w-full items-center justify-center rounded-md border border-slate-line text-sm font-semibold text-charcoal">Cancel</a>
       <p className="mt-3 text-center text-xs text-anon-gray">Secured by Paystack · anon hides your name</p>
       {isDemo && <p className="mt-2 text-center text-xs text-amber-600">Demo video — tipping will be a profile tip (no video attached)</p>}
     </div>

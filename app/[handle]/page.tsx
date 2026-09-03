@@ -57,7 +57,7 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
   }
   return (
     <div className="pt-4 w-full min-w-0">
-      <div className="relative h-[160px] sm:h-[200px] w-full overflow-hidden rounded-xl bg-[#F3F4F6]">
+      <div className="relative h-[160px] sm:h-[200px] w-full overflow-hidden rounded-lg bg-[#F1F5F9]">
         <Image src={`https://picsum.photos/seed/${handle}/600/300`} alt={`${handle} cover`} width={600} height={300} className="h-full w-full object-cover" sizes="(max-width: 640px) 100vw, 640px" priority={false} />
         {loading && <div className="absolute inset-0 shimmer-bg opacity-60"><span className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent" /></div>}
       </div>
@@ -67,8 +67,8 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
           <Image src={`https://picsum.photos/seed/av-${handle}/160/160`} alt={handle} width={80} height={80} className="h-full w-full object-cover" />
         </div>
         <div className="min-w-0 flex-1 sm:ml-2">
-          <h1 className="text-lg sm:text-xl font-bold text-charcoal truncate">@{handle} </h1>
-          <p className="text-sm text-anon-gray break-words">{tips.length ? `₦${tips.reduce((s,x)=>s+x.amount,0).toLocaleString("en-NG")} raised · ${tips.length} tip${tips.length!==1?"s":""}` : "No tips yet — be the first!"}</p>
+          <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-charcoal truncate">@{handle} </h1>
+          <p className="text-sm text-anon-gray break-words font-mono tnum">{tips.length ? `₦${tips.reduce((s,x)=>s+x.amount,0).toLocaleString("en-NG")} raised · ${tips.length} tip${tips.length!==1?"s":""}` : "No tips yet"}</p>
         </div>
       </div>
 
@@ -77,12 +77,12 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
       ) : (
         <ul className="mt-6 space-y-3">
           {tips.map((t) => (
-            <li key={t.id} className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-sm flex gap-3">
+            <li key={t.id} className="rounded-lg border border-slate-line bg-white p-4 shadow-sm flex gap-3">
               <div className="h-10 w-10 shrink-0 rounded-full bg-anon-gray/20 flex items-center justify-center text-xs font-bold text-anon-gray">
                 {t.is_anonymous ? "?" : t.tipper.slice(1, 3).toUpperCase()}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-charcoal">₦{t.amount.toLocaleString("en-NG")} · {t.is_anonymous ? <span className="text-anon-gray">anon</span> : t.tipper} · {new Date(t.created_at).toLocaleTimeString("en-NG", { hour: "numeric", minute: "2-digit" })}</p>
+                <p className="text-sm font-semibold tracking-tight text-charcoal tnum">₦{t.amount.toLocaleString("en-NG")} <span className="font-normal text-anon-gray">· {t.is_anonymous ? "anon" : t.tipper} · {new Date(t.created_at).toLocaleTimeString("en-NG", { hour: "numeric", minute: "2-digit" })}</span></p>
                 <p className="text-sm text-charcoal/80">{t.message}</p>
               </div>
             </li>
@@ -93,9 +93,9 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
       <div className="sticky bottom-6 mt-6">
         <a
           href={`/@${handle}/video/${handle === "ayo_jazz" ? "7234567890123456789" : "demo123"}`}
-          className="flex min-h-[48px] w-full items-center justify-center rounded-full bg-brand-blue text-white font-bold shadow-md hover:bg-[#0046CC] focus-visible:ring-2 focus-visible:ring-brand-blue/30"
+          className="flex min-h-[48px] w-full items-center justify-center rounded-md bg-brand-blue text-white font-semibold shadow-md hover:bg-[#0046CC] focus-visible:ring-2 focus-visible:ring-brand-blue/30"
         >
-          ₦ Tip this creator
+          Tip this creator
         </a>
       </div>
       {retries > 0 && loading && <p className="mt-2 text-center text-xs text-anon-gray">Retrying… {retries}/3</p>}
