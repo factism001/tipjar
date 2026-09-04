@@ -56,14 +56,14 @@ export async function GET(
     const svc = createClient('service_role');
     const { data: tips } = await svc
       .from('tips')
-      .select('id, amount, tipper_name, is_anonymous, message, created_at')
+      .select('id, amount, net_amount, tipper_name, is_anonymous, message, created_at')
       .eq('creator_id', creator.id)
       .eq('status', 'success')
       .order('created_at', { ascending: false })
       .limit(10);
     recent_tips = (tips || []).map((t: any) => ({
       id: t.id,
-      amount: t.amount,
+      amount: t.net_amount ?? t.amount,
       tipper_name: t.is_anonymous ? 'anon' : t.tipper_name,
       is_anonymous: !!t.is_anonymous,
       message: t.message || '',

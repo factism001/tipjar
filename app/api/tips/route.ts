@@ -119,12 +119,20 @@ export async function POST(req: NextRequest) {
   // 6. Generate unique Paystack reference
   const reference = generatePaystackRef(creator.handle);
 
-  // 7. Initialize Paystack transaction (Split 10%)
+  // 7. Fan-covers-fee gross-up: chips/form post the TIP (what creator nets, whole naira).
+  //    Fan is charged ceil(tip / 0.9) so the 10% platform split leaves the creator whole.
+  //    e.g. ₦500 tip -> ₦556 charge -> platform ₦56, creator ₦500 (minus ~1.5% Paystack processing, bearer: subaccount).
+  const tipKobo = amount;
+  const chargeKobo = Math.ceil(tipKobo / 0.9 / 100) * 100;
+  const platformFee = chargeKobo - tipKobo;
+  const netAmount = tipKobo;
+
+  // 8. Initialize Paystack transaction (Split 10% of the CHARGE)
   let paystackData: { authorization_url: string; access_code: string; reference: string };
   try {
     paystackData = await initializeTransaction({
       email: tipper_email,
-      amount,
+      amount: chargeKobo,
       reference,
       subaccount: subaccountCode,
       metadata: {
@@ -136,8 +144,9 @@ export async function POST(req: NextRequest) {
         tipper_handle: tipper_handle || null,
         is_anonymous: !!is_anonymous,
         tip_message: message || null,
-        // for webhook split calc audit
-        amount_kobo: amount,
+        // for webhook split calc audit (webhook cross-checks the CHARGE)
+        amount_kobo: chargeKobo,
+        tip_kobo: tipKobo,
       },
       callback_url: callback_url || `${process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://tipjar-gray.vercel.app'}/tip/success?ref=${reference}`,
     });
@@ -147,17 +156,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Payment initialization failed', detail: msg.slice(0, 300) }, { status: 502 });
   }
 
-  // 8. Insert pending tip row (service_role to ensure write despite RLS anon INSERT policy)
-  const platformFee = Math.floor(amount * 0.10);
-  const netAmount = amount - platformFee;
-
+  // 9. Insert pending tip row (service_role to ensure write despite RLS anon INSERT policy)
+  //    amount = CHARGE (what Paystack will collect; webhook cross-checks this),
+  //    net_amount = TIP (creator's 100%), platform_fee = fan-covered cut.
   const { data: tipRow, error: tipErr } = await supabaseService
     .from('tips')
     .insert({
       paystack_ref: reference,
       creator_id: creator.id,
       video_id: videoRowId,
-      amount,
+      amount: chargeKobo,
       net_amount: netAmount,
       platform_fee: platformFee,
       tip_scope: tipScope,
@@ -193,7 +201,8 @@ export async function POST(req: NextRequest) {
       reference,
       authorization_url: paystackData.authorization_url,
       access_code: paystackData.access_code,
-      amount,
+      amount: chargeKobo,
+      tip_amount: tipKobo,
       net_amount: netAmount,
       platform_fee: platformFee,
       tip_scope: tipScope,

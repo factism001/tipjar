@@ -25,13 +25,14 @@ export async function GET(req: NextRequest) {
 
   const { data: tips } = await svc
     .from('tips')
-    .select('id, amount, tipper_name, is_anonymous, message, status, created_at')
+    .select('id, amount, net_amount, tipper_name, is_anonymous, message, status, created_at')
     .eq('creator_id', creator.id)
     .order('created_at', { ascending: false })
     .limit(50);
 
   const paid = (tips || []).filter((t: any) => t.status === 'success');
-  const total = paid.reduce((s: number, t: any) => s + (t.amount || 0), 0);
+  // Creator-facing totals = what the creator nets (fan-covered fee excluded)
+  const total = paid.reduce((s: number, t: any) => s + (t.net_amount ?? t.amount ?? 0), 0);
   const today = new Date().toISOString().slice(0, 10);
   const todayCount = paid.filter((t: any) => (t.created_at || '').slice(0, 10) === today).length;
 

@@ -53,8 +53,10 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
   const amount = customMode && custom ? parseInt(custom, 10) || 0 : selected;
   const amountKobo = amount * 100;
   const fxRate = fxRates?.[fxCur] || null;
-  const fxEquiv = fxRate && amount > 0 ? amount / fxRate : null;
-  const receiveN = amount > 0 ? Math.round(amount * 0.9) : 0;
+  // Fan-covers-fee: chips set the TIP (creator nets 100%); fan pays ceil(tip / 0.9), whole naira.
+  const chargeN = amount > 0 ? Math.ceil(amount / 0.9) : 0;
+  const feeN = chargeN - amount;
+  const fxEquiv = fxRate && chargeN > 0 ? chargeN / fxRate : null;
 
   async function pay() {
     if (!amount || amount < 100) { setError("Minimum tip is ₦100"); return; }
@@ -173,8 +175,8 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
       <div className="mt-4 flex items-center justify-between">
         <p className="text-xs text-anon-gray">
           {showFx && fxEquiv !== null
-            ? <>≈ {CUR_SYM[fxCur]}{fxEquiv.toLocaleString("en-US", { maximumFractionDigits: 2 })} · @{handle} receives ≈ ₦{receiveN.toLocaleString("en-NG")}</>
-            : <>@{handle} receives ≈ ₦{receiveN.toLocaleString("en-NG")} <span className="font-mono">(after 10% fee)</span></>}
+            ? <>≈ {CUR_SYM[fxCur]}{fxEquiv.toLocaleString("en-US", { maximumFractionDigits: 2 })} total · @{handle} gets ₦{amount.toLocaleString("en-NG")}</>
+            : <>₦{amount.toLocaleString("en-NG")} tip + ₦{feeN.toLocaleString("en-NG")} fee = ₦{chargeN.toLocaleString("en-NG")} total · @{handle} gets ₦{amount.toLocaleString("en-NG")}</>}
         </p>
         <button
           onClick={() => setShowFx((v) => !v)}
@@ -204,7 +206,7 @@ export default function VideoTipPage({ params }: { params: { handle: string; id:
         className="mt-6 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-md bg-brand-blue text-white font-semibold text-sm hover:bg-[#0046CC] disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-brand-blue/30"
       >
         {paying ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : null}
-        {paying ? "Opening Paystack" : `Pay ₦${(amount || 0).toLocaleString("en-NG")}`}
+        {paying ? "Opening Paystack" : `Pay ₦${(chargeN || 0).toLocaleString("en-NG")}`}
       </button>
       <a href={`/@${handle}`} className="mt-3 flex min-h-[44px] w-full items-center justify-center rounded-md border border-slate-line text-sm font-semibold text-charcoal">Cancel</a>
       <p className="mt-3 text-center text-xs text-anon-gray">Secured by Paystack · anon hides your name</p>

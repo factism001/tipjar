@@ -31,7 +31,7 @@ export default function DashboardPage() {
         setTips(
           (j.tips || []).map((t: any) => ({
             id: String(t.id),
-            amount: t.amount || 0,
+            amount: t.net_amount ?? t.amount ?? 0,
             tipper: t.is_anonymous ? "anonymous" : t.tipper_name || "tipper",
             is_anonymous: !!t.is_anonymous,
             created_at: t.created_at,

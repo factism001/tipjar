@@ -85,8 +85,8 @@ export async function POST(req: Request) {
     return new Response('Bad payload: missing reference/amount', { status: 400 });
   }
 
-  // Amount guard: 100 .. 5_000_000 kobo (₦1 .. ₦50k)
-  if (amountKobo < 100 || amountKobo > 5_000_000) {
+  // Amount guard: 100 kobo .. 6_000_000 kobo (max ₦50k tip grosses to ₦55,556 charge)
+  if (amountKobo < 100 || amountKobo > 6_000_000) {
     console.error(`[webhook] Amount out of range: ${amountKobo}`);
     return new Response('Amount out of range', { status: 400 });
   }
@@ -183,8 +183,8 @@ export async function POST(req: Request) {
         `[TipJar] Tip received ✓\n` +
         `Ref: ${reference}\n` +
         `Creator: ${creatorId.slice(0, 8)}…\n` +
-        `Amount: ₦${(amountKobo / 100).toLocaleString('en-NG')}\n` +
-        `Net: ₦${(net / 100).toLocaleString('en-NG')}\n` +
+        `Fan paid: ₦${(amountKobo / 100).toLocaleString('en-NG')}\n` +
+        `Creator nets: ₦${(net / 100).toLocaleString('en-NG')}\n` +
         `Status: ${tipStatus}`;
       fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
