@@ -49,7 +49,7 @@ export default function LandingPage() {
         ))}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div id="creators" className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3 scroll-mt-20">
         {filtered.map((c) => (
           <a
             key={c.handle}
@@ -85,7 +85,7 @@ export default function LandingPage() {
       </p>
 
       <a
-        href="/dashboard"
+        href="#creators"
         className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 inline-flex min-h-[48px] min-w-[120px] max-w-[90vw] items-center justify-center rounded-md bg-brand-blue px-6 sm:px-8 text-sm font-semibold text-white shadow-md hover:bg-[#0046CC] focus-visible:ring-2 focus-visible:ring-brand-blue/30"
       >
         Tip now

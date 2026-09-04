@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 // @ts-ignore
 import "./globals.css";
+import SessionBoot from "@/components/SessionBoot";
 
 export const metadata: Metadata = {
   title: "TipJar — Tip Naija creators",
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: `if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}))` }} />
       </head>
       <body className="min-h-screen bg-white antialiased overflow-x-hidden">
+        <SessionBoot />
         <header className="sticky top-0 z-40 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80 border-b border-slate-line">
           <div className="mx-auto max-w-[640px] flex items-center justify-between px-4 py-3 gap-2">
             <a href="/" className="text-lg sm:text-xl font-extrabold tracking-tight text-charcoal shrink-0 min-h-[44px] flex items-center">TipJar<span className="text-brand-blue">.</span></a>
