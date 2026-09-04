@@ -15,6 +15,7 @@ export default function DashboardPage() {
   const [creator, setCreator] = useState<Creator | null>(null);
   const [tips, setTips] = useState<Tip[]>([]);
   const [stats, setStats] = useState({ total_kobo: 0, paid_count: 0, today_count: 0 });
+  const [copied, setCopied] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -86,6 +87,58 @@ export default function DashboardPage() {
               <div className="flex-1 rounded-lg bg-white border border-slate-line p-4 min-w-0">
                 <p className="text-xs text-anon-gray">Payouts to</p>
                 <p className="text-lg sm:text-xl font-bold font-mono tnum">{creator.bank_account || "—"}</p>
+              </div>
+            </div>
+
+            <div className="mt-6 w-full min-w-0 rounded-lg border border-slate-line bg-white p-4 sm:p-5">
+              <h2 className="text-base font-bold tracking-tight text-charcoal">Your tip QR code</h2>
+              <p className="mt-1 text-sm text-anon-gray">Print it for tables, stickers, banners — fans scan and land straight on your tip page.</p>
+              <div className="mt-4 flex flex-col sm:flex-row items-center gap-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/api/creator/${encodeURIComponent(creator.handle)}/qr?size=512`}
+                  alt={`Tip QR code for @${creator.handle}`}
+                  width={160}
+                  height={160}
+                  className="h-40 w-40 rounded-md border border-slate-line"
+                />
+                <div className="w-full min-w-0 flex-1 space-y-3">
+                  <p className="text-sm font-mono font-semibold text-charcoal break-all tnum">
+                    {(process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, '') || 'tipjar-gray.vercel.app'}/@{creator.handle}
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <button
+                      onClick={async () => {
+                        const res = await fetch(`/api/creator/${encodeURIComponent(creator.handle)}/qr?size=1024`);
+                        const blob = await res.blob();
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `tipjar-@${creator.handle}-qr.png`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                      }}
+                      className="flex min-h-[48px] flex-1 items-center justify-center rounded-md bg-brand-blue px-4 text-sm font-semibold text-white hover:bg-[#0046CC]"
+                    >
+                      Download print QR
+                    </button>
+                    <button
+                      onClick={async () => {
+                        const link = `${window.location.origin}/@${creator.handle}`;
+                        try { await navigator.clipboard.writeText(link); } catch {
+                          const ta = document.createElement('textarea');
+                          ta.value = link; document.body.appendChild(ta); ta.select();
+                          document.execCommand('copy'); ta.remove();
+                        }
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }}
+                      className="flex min-h-[48px] flex-1 items-center justify-center rounded-md border border-slate-line px-4 text-sm font-semibold text-charcoal"
+                    >
+                      {copied ? 'Copied' : 'Copy tip link'}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
