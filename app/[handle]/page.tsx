@@ -5,7 +5,7 @@ import ShimmerCard from "@/components/ShimmerCard";
 
 export const dynamic = "force-dynamic";
 
-type TipRow = { id: string; amount: number; tipper: string; is_anonymous: boolean; created_at: string; message: string };
+type TipRow = { id: string; amount: number; tipper: string; is_anonymous: boolean; created_at: string; message: string; thank_you_message?: string | null };
 
 const MOCK_TIPS: TipRow[] = [
   { id: "1", amount: 5000, tipper: "anon", is_anonymous: true, created_at: new Date(Date.now() - 2 * 3600 * 1000).toISOString(), message: "Omo, this hit different 🔥" },
@@ -20,6 +20,7 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
   const [loading, setLoading] = useState(true);
   const [tips, setTips] = useState<TipRow[]>([]);
   const [retries, setRetries] = useState(0);
+  const [missing, setMissing] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,13 +37,14 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
             is_anonymous: !!x.is_anonymous,
             created_at: x.created_at ?? new Date().toISOString(),
             message: x.message ?? "",
+            thank_you_message: x.thank_you_message ?? null,
           }));
           setTips(apiTips.length ? apiTips : []);
           setLoading(false); return;
         }
-        // 404 from API = creator not found
+        // 404 from API = creator not found → claim flow
         if (res.status === 404) {
-          if (!cancelled) window.location.href = "/404";
+          if (!cancelled) { setMissing(true); setLoading(false); }
           return;
         }
       } catch {}
@@ -54,6 +56,18 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
 
   if (isReserved) {
     return <div className="pt-8 text-center px-4"><p className="text-sm text-red-600">Not found</p><a href="/" className="mt-4 inline-block min-h-[44px] px-4 py-2 text-brand-blue font-semibold">Go home</a></div>;
+  }
+  if (missing) {
+    return (
+      <div className="pt-10 text-center max-w-[480px] mx-auto px-4">
+        <p className="text-lg font-extrabold tracking-tight text-charcoal">@{handle} hasn&apos;t claimed this page yet</p>
+        <p className="mt-1 text-sm text-anon-gray">Is this you? Claim it and start receiving tips in minutes.</p>
+        <div className="mt-6 flex flex-col gap-3">
+          <a href={`/onboard?handle=${encodeURIComponent(handle)}`} className="flex min-h-[48px] w-full items-center justify-center rounded-md bg-brand-blue text-white font-semibold text-sm">Claim @{handle}</a>
+          <a href="/" className="flex min-h-[44px] w-full items-center justify-center rounded-md border border-slate-line text-sm font-semibold">Explore creators</a>
+        </div>
+      </div>
+    );
   }
   return (
     <div className="pt-4 w-full min-w-0">
@@ -84,6 +98,9 @@ export default function ProfilePage({ params }: { params: { handle: string } }) 
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold tracking-tight text-charcoal tnum">₦{t.amount.toLocaleString("en-NG")} <span className="font-normal text-anon-gray">· {t.is_anonymous ? "anon" : t.tipper} · {new Date(t.created_at).toLocaleTimeString("en-NG", { hour: "numeric", minute: "2-digit" })}</span></p>
                 <p className="text-sm text-charcoal/80">{t.message}</p>
+                {t.thank_you_message ? (
+                  <p className="mt-2 rounded-md bg-[#F0FDF4] border border-naija-green/20 px-3 py-2 text-sm text-charcoal">Creator: {t.thank_you_message}</p>
+                ) : null}
               </div>
             </li>
           ))}

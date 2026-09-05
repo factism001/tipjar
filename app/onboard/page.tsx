@@ -19,8 +19,8 @@ async function authed(path: string, body: unknown) {
   return j;
 }
 
-export default function OnboardPage() {
-  const [handle, setHandle] = useState("");
+export default function OnboardPage({ searchParams }: { searchParams?: { handle?: string } }) {
+  const [handle, setHandle] = useState((searchParams?.handle || "").replace(/^@/, "").toLowerCase());
   const [bankCode, setBankCode] = useState("999992");
   const [bankName, setBankName] = useState("OPay Digital Services Limited (OPay)");
   const [acct, setAcct] = useState("");

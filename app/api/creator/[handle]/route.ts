@@ -56,7 +56,7 @@ export async function GET(
     const svc = createClient('service_role');
     const { data: tips } = await svc
       .from('tips')
-      .select('id, amount, net_amount, tipper_name, is_anonymous, message, created_at')
+      .select('id, amount, net_amount, tipper_name, is_anonymous, message, created_at, thank_you_message, thanked_at')
       .eq('creator_id', creator.id)
       .eq('status', 'success')
       .order('created_at', { ascending: false })
@@ -68,6 +68,8 @@ export async function GET(
       is_anonymous: !!t.is_anonymous,
       message: t.message || '',
       created_at: t.created_at,
+      thank_you_message: t.thank_you_message || null,
+      thanked_at: t.thanked_at || null,
     }));
   } catch {}
 

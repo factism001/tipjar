@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
 
   const { data: tips } = await svc
     .from('tips')
-    .select('id, amount, net_amount, tipper_name, is_anonymous, message, status, created_at')
+    .select('id, amount, net_amount, tipper_name, is_anonymous, message, status, created_at, thank_you_message, thanked_at')
     .eq('creator_id', creator.id)
     .order('created_at', { ascending: false })
     .limit(50);

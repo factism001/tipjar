@@ -2,12 +2,13 @@
 import { useEffect, useState } from "react";
 import AuthGuard from "@/components/AuthGuard";
 import RealtimeTable from "@/components/RealtimeTable";
+import ThankYouBox from "@/components/ThankYouBox";
 import { getAccessToken, signOut } from "@/lib/supabase-client";
 
 export const dynamic = "force-dynamic";
 
 type Creator = { handle: string; bank_account: string | null; paystack_subaccount_code: string | null };
-type Tip = { id: string; amount: number; tipper: string; is_anonymous: boolean; created_at: string; message?: string };
+type Tip = { id: string; amount: number; tipper: string; is_anonymous: boolean; created_at: string; message?: string; thank_you_message?: string | null };
 
 export default function DashboardPage() {
   const [authed, setAuthed] = useState(false);
@@ -36,6 +37,7 @@ export default function DashboardPage() {
             is_anonymous: !!t.is_anonymous,
             created_at: t.created_at,
             message: t.message || "",
+            thank_you_message: t.thank_you_message || null,
           }))
         );
         setStats(j.stats || { total_kobo: 0, paid_count: 0, today_count: 0 });
@@ -145,6 +147,8 @@ export default function DashboardPage() {
             <div className="mt-6 w-full min-w-0">
               <RealtimeTable initialTips={tips} />
             </div>
+
+            <ThankYouBox tips={tips} onPosted={(id, m) => setTips((prev) => prev.map((t) => (t.id === id ? { ...t, thank_you_message: m } : t)))} />
 
             <button
               onClick={() => {

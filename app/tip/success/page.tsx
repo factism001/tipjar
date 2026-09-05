@@ -14,6 +14,11 @@ export default function TipSuccessPage({ searchParams }: { searchParams: { ref?:
         </div>
       )}
       <p className="mt-2 text-xs text-anon-gray px-2">If Paystack shows success, the dashboard updates in about 30 seconds.</p>
+      <div className="mt-4 rounded-lg border border-slate-line bg-[#F8FAFC] p-4 text-left">
+        <p className="text-sm font-semibold text-charcoal">Enjoyed the content? Share it.</p>
+        <p className="mt-1 text-sm text-anon-gray">Your tip shows on the creator&apos;s donor wall. Copy the link and hype them on TikTok.</p>
+        <a href="/" className="mt-2 inline-block text-sm font-semibold text-brand-blue">Share TipJar</a>
+      </div>
       <div className="mt-6 flex flex-col gap-3">
         <a href="/" className="flex min-h-[48px] w-full items-center justify-center rounded-md bg-brand-blue text-white font-semibold text-sm sm:text-base">Back to TipJar</a>
         <a href={`/`} className="flex min-h-[44px] w-full items-center justify-center rounded-md border border-slate-line text-sm font-semibold">Explore creators</a>
