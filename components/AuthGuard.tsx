@@ -44,7 +44,7 @@ export default function AuthGuard({ children, onVerified }: Props) {
     try {
       const { error } = await supabaseBrowser().auth.signInWithOtp({
         email: clean,
-        options: { shouldCreateUser: true },
+        options: { shouldCreateUser: true, emailRedirectTo: window.location.href },
       });
       if (error) throw error;
       setEmail(clean);
@@ -88,7 +88,7 @@ export default function AuthGuard({ children, onVerified }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/60 p-4 backdrop-blur-[2px]">
       <div className="w-full max-w-[360px] rounded-lg bg-white p-6 shadow-lg" role="dialog" aria-modal="true" aria-label="Verify your email">
         <h2 className="text-xl font-extrabold tracking-tight text-charcoal">Verify your email</h2>
-        <p className="mt-1 text-sm text-anon-gray">Enter the 6-digit code. Expires in 60 minutes.</p>
+        <p className="mt-1 text-sm text-anon-gray">Tap the Verify link in the email, or enter the 6-digit code. Expires in 60 minutes.</p>
 
         {step === "email" ? (
           <div className="mt-5 space-y-3">

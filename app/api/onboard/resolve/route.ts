@@ -34,8 +34,15 @@ export async function POST(req: NextRequest) {
     const r = await resolveBankAccount(body.account_number, body.bank_code);
     return NextResponse.json({ account_name: r.account_name });
   } catch (e: any) {
+    console.error('[resolve] failed', body.account_number, body.bank_code, e?.message || e);
+    const msg = typeof e?.message === 'string' ? e.message : '';
+    const detail = msg.includes('Account not found') || msg.includes('Invalid account')
+      ? 'Account not found at this bank — check number and bank'
+      : msg.includes('timeout') || msg.includes('fetch failed')
+        ? 'Bank verification timed out — retry in a minute'
+        : 'Could not verify this account — check the number and bank';
     return NextResponse.json(
-      { error: 'Could not verify this account — check the number and bank' },
+      { error: detail },
       { status: 400 }
     );
   }

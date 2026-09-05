@@ -22,7 +22,8 @@ async function authed(path: string, body: unknown) {
 export default function OnboardPage({ searchParams }: { searchParams?: { handle?: string } }) {
   const [handle, setHandle] = useState((searchParams?.handle || "").replace(/^@/, "").toLowerCase());
   const [bankCode, setBankCode] = useState("999992");
-  const [bankName, setBankName] = useState("OPay Digital Services Limited (OPay)");
+  const [bankQuery, setBankQuery] = useState("OPay Digital Services Limited (OPay)");
+  const [bankOpen, setBankOpen] = useState(false);
   const [acct, setAcct] = useState("");
   const [acctName, setAcctName] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
@@ -32,16 +33,22 @@ export default function OnboardPage({ searchParams }: { searchParams?: { handle?
 
   const bankOk = /^\d{10}$/.test(acct);
   const handleOk = /^[a-z0-9._]{2,30}$/i.test(handle.replace(/^@/, ""));
+  const selectedBank = BANKS.find((b) => b.code === bankCode) || null;
+  const bankValid = !!selectedBank && bankQuery.trim().toLowerCase() === selectedBank.name.toLowerCase();
+  const bankFiltered = (bankQuery.trim() === "" ? BANKS.slice(0, 50) : BANKS.filter((b) => b.name.toLowerCase().includes(bankQuery.trim().toLowerCase())).slice(0, 50));
 
   function pickBank(code: string) {
+    const hit = BANKS.find((b) => b.code === code);
     setBankCode(code);
     setAcctName(null);
-    setBankName(BANKS.find((b) => b.code === code)?.name || "");
+    setBankQuery(hit?.name || "");
+    setBankOpen(false);
   }
 
   async function verifyAccount() {
     setError("");
     setAcctName(null);
+    if (!bankValid) { setError("Pick a bank from the list first"); return; }
     if (!bankOk) { setError("Account number must be 10 digits"); return; }
     setVerifying(true);
     try {
@@ -91,25 +98,41 @@ export default function OnboardPage({ searchParams }: { searchParams?: { handle?
               />
             </label>
 
-            <label className="mt-4 block">
+            <div className="mt-4 block relative">
               <span className="text-sm font-semibold tracking-tight text-charcoal">Bank</span>
               <input
-                value={bankName}
+                value={bankQuery}
                 onChange={(e) => {
-                  setBankName(e.target.value);
-                  const hit = BANKS.find((b) => b.name.toLowerCase() === e.target.value.toLowerCase());
-                  if (hit) pickBank(hit.code);
+                  setBankQuery(e.target.value);
+                  setAcctName(null);
+                  setBankOpen(true);
                 }}
-                list="tipjar-banks"
+                onFocus={() => setBankOpen(true)}
                 placeholder="Start typing your bank"
+                autoComplete="off"
                 className="mt-1 w-full rounded-lg border border-slate-line px-4 py-3 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 min-h-[44px]"
               />
-              <datalist id="tipjar-banks">
-                {BANKS.map((b) => (
-                  <option key={b.code} value={b.name} />
-                ))}
-              </datalist>
-            </label>
+              {bankOpen && (
+                <div className="absolute z-20 mt-1 max-h-[220px] w-full overflow-y-auto rounded-lg border border-slate-line bg-white shadow-lg">
+                  {bankFiltered.length === 0 && (
+                    <p className="px-4 py-3 text-sm text-anon-gray">No banks match “{bankQuery.trim()}”</p>
+                  )}
+                  {bankFiltered.map((b) => (
+                    <button
+                      key={b.code + b.name}
+                      type="button"
+                      onClick={() => pickBank(b.code)}
+                      className="flex w-full min-h-[44px] items-center px-4 py-2 text-left text-sm hover:bg-[#F1F5F9]"
+                    >
+                      {b.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {!bankValid && bankQuery.trim() !== "" && (
+                <p className="mt-1 text-xs text-red-600">Pick a bank from the list — free text won&apos;t verify.</p>
+              )}
+            </div>
 
             <label className="mt-4 block">
               <span className="text-sm font-semibold tracking-tight text-charcoal">Account number</span>
@@ -131,7 +154,7 @@ export default function OnboardPage({ searchParams }: { searchParams?: { handle?
             <div className="mt-5 flex flex-col gap-3">
               <button
                 onClick={verifyAccount}
-                disabled={verifying || !bankOk}
+                disabled={verifying || !bankOk || !bankValid}
                 className="flex min-h-[48px] w-full items-center justify-center rounded-md border border-slate-line text-sm font-semibold text-charcoal disabled:opacity-60"
               >
                 {verifying ? "Verifying" : acctName ? "Re-verify account" : "Verify account"}
