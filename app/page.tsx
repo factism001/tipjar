@@ -65,6 +65,15 @@ export default function LandingPage() {
         ))}
       </div>
 
+      {filtered.length === 0 ? (
+        <div className="mt-4 rounded-lg border border-slate-line bg-white p-6 text-center">
+          <p className="text-sm font-semibold text-charcoal">No creators found for “{q.trim()}”</p>
+          <p className="mt-1 text-sm text-anon-gray">
+            Is this you? <a href={`/onboard?handle=${encodeURIComponent(q.trim().replace(/^@/, ""))}`} className="font-semibold text-brand-blue">Claim this handle</a>
+          </p>
+        </div>
+      ) : null}
+
       {loadingMore && (
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
           {[0, 1, 2].map((i) => (
@@ -73,12 +82,14 @@ export default function LandingPage() {
         </div>
       )}
 
+      {q.trim() === "" && (
       <button
         onClick={loadMore}
         className="mt-4 w-full rounded-lg border border-slate-line py-3 text-sm font-semibold text-anon-gray hover:text-charcoal min-h-[44px]"
       >
         {loadingMore ? "Loading" : "Load 12 more"}
       </button>
+      )}
 
       <p className="mt-4 text-center text-sm text-anon-gray">
         Creator? <a href="/onboard" className="font-semibold text-brand-blue">Claim your handle</a>
